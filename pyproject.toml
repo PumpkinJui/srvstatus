@@ -1,5 +1,5 @@
 [project]
-name = "srvchecker"
+name = "srvstatus"
 version = "0.0.1"
 description = "定时拨测 URL 列表中的地址，通过邮件发送告警，自动修改 DNS 记录。"
 readme = "README.md"
