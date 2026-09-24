@@ -1,85 +1,73 @@
-# -*- coding: utf8 -*-
-import sys
+from __future__ import annotations
+
 import os
+import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)) + "/..")
 
-import logging
-import json
-import requests
+from datetime import datetime, timezone
 from email.mime.text import MIMEText
-from email.header import Header
-import smtplib
+from email.utils import parseaddr
+from smtplib import SMTP_SSL, SMTPException
+from socket import create_connection
 
-logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
-
-# Third-party SMTP service for sending alert emails. 第三方 SMTP 服务，用于发送告警邮件
-mail_host = "smtp.qq.com"       # SMTP server, such as QQ mailbox, need to open SMTP service in the account. SMTP服务器,如QQ邮箱，需要在账户里开启SMTP服务
-mail_user = "XXXXXXXXX@qq.com"  # Username 用户名
-mail_pass = "****************"  # Password, SMTP service password. 口令，SMTP服务密码
-mail_port = 465  # SMTP service port. SMTP服务端口
-
-# The URL address need to dial test. 需要拨测的URL地址
-test_url_list = [
-    "http://www.baidu.com",
-    "http://www.qq.com",
-    "http://wrong.tencent.com",
-    "http://unkownurl.com"
-]
-
-# The notification list of alert emails. 告警邮件通知列表
-email_notify_list = {
-    "XXXXXXXXX@qq.com",
-    "XXXXXXXXX@qq.com"
-}
+logger: list[str] = []
 
 
-def sendEmail(fromAddr, toAddr, subject, content):
-    sender = fromAddr
-    receivers = [toAddr]
-    message = MIMEText(content, 'plain', 'utf-8')
-    message['From'] = Header(fromAddr, 'utf-8')
-    message['To'] = Header(toAddr, 'utf-8')
-    message['Subject'] = Header(subject, 'utf-8')
+def getTime() -> str:
+    return datetime.now(timezone.utc).isoformat(timespec='seconds')
+
+
+def sendEmail(content: list[str]) -> None:
+    mail_host = 'smtp.126.com'
+    mail_user_full = os.environ.get('mail_user')
+    mail_pass = os.environ.get('mail_pass')
+    if not (mail_user_full and mail_pass):
+        logger.append(f'[ERROR] {getTime()} 未找到可用邮箱！')
+        raise OSError
+    _, mail_user = parseaddr(mail_user_full)
+    recv_list = [mail_user]
+    recv_str = ', '.join(recv_list)
+    subject = '服务器连通性提示'
+    content_str = '\n'.join(content)
+    body = (
+        '监测到以下服务器节点可能下线，需要进一步排查。\n'
+        f'{content_str}'
+        '\n本邮件由腾讯云 SCF 发送，请勿回复\n'
+    )
+    message = MIMEText(body, 'plain', 'utf-8')
+    message['From'] = mail_user_full
+    message['To'] = recv_str
+    message['Subject'] = subject
     try:
-        smtpObj = smtplib.SMTP_SSL(mail_host, mail_port)
-        smtpObj.login(mail_user, mail_pass)
-        smtpObj.sendmail(sender, receivers, message.as_string())
-        print("send email success")
-        return True
-    except smtplib.SMTPException as e:
-        print(e)
-        print("Error: send email fail")
-        return False
+        smtpObj = SMTP_SSL(mail_host, 465)
+        _ = smtpObj.login(mail_user, mail_pass)
+        _ = smtpObj.sendmail(mail_user, recv_list, message.as_string())
+    except SMTPException as e:
+        logger.append(f'[ERROR] {getTime()} - 邮件发送失败！{type(e).__name__}: {e}')
+        raise SMTPException from e
 
 
-def test_url(url_list):
-    errorinfo = []
-    for url in url_list:
-        resp = None
+def test_url(host_list: list[str], port: int = 33890) -> None:
+    errorinfo: list[str] = []
+    for host in host_list:
         try:
-            resp = requests.get(url, timeout=3)
-            print (resp)
-        except (
-        requests.exceptions.Timeout, requests.exceptions.ConnectionError, requests.exceptions.ConnectTimeout) as e:
-            logger.warn("request exceptions:" + str(e))
-            errorinfo.append("Access " + url + " timeout")
-        else:
-            if resp.status_code >= 400:
-                logger.warn("response status code fail:" + str(resp.status_code))
-                errorinfo.append("Access " + url + " fail, status code:" + str(resp.status_code))
-    if len(errorinfo) != 0:
-        body = "\r\n".join(errorinfo)
-        subject = "Please note: PlayCheck Error"
-        for toAddr in email_notify_list:
-            print ("send message [%s] to [%s]" % (body, toAddr))
-            sendEmail(mail_user, toAddr, subject, body)
+            logger.append(f'[INFO] {getTime()} - {host}')
+            with create_connection((host, port), timeout=3):
+                continue
+        except OSError as e:
+            logger.append(f'[WARNING] {getTime()} - {host} - {type(e).__name__}: {e}')
+            errorinfo.append(host)
+    if errorinfo:
+        sendEmail(errorinfo)
 
 
-def main_handler(event, context):
-    test_url(test_url_list)
+def main_handler(event, context) -> None:
+    host_list = ['apple.cvm.xiaozhiyuqwq.top', 'banana.cvm.xiaozhiyuqwq.top']
+    # host_list = ['182.254.222.77', '101.37.17.212']
+    test_url(host_list)
+    # print('\n'.join(logger))
 
 
 if __name__ == '__main__':
-    main_handler("", "")
+    main_handler('', '')
