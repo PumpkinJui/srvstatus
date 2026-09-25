@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import os
 import sys
 
@@ -15,7 +13,9 @@ logger: list[str] = []
 
 
 def getTime() -> str:
-    return datetime.now(timezone.utc).isoformat(timespec='seconds')
+    return (
+        datetime.now(timezone.utc).isoformat(timespec='seconds').replace('+00:00', 'Z')
+    )
 
 
 def sendEmail(content: list[str]) -> None:
@@ -24,7 +24,7 @@ def sendEmail(content: list[str]) -> None:
     mail_pass = os.environ.get('mail_pass')
     if not (mail_user_full and mail_pass):
         logger.append(f'[ERROR] {getTime()} 未找到可用邮箱！')
-        raise OSError
+        raise OSError('未找到可用邮箱！')
     _, mail_user = parseaddr(mail_user_full)
     recv_list = [mail_user]
     recv_str = ', '.join(recv_list)
@@ -33,7 +33,7 @@ def sendEmail(content: list[str]) -> None:
     body = (
         '监测到以下服务器节点可能下线，需要进一步排查。\n'
         f'{content_str}'
-        '\n本邮件由腾讯云 SCF 发送，请勿回复\n'
+        '\n本邮件由腾讯云 SCF 自动发送，请勿回复\n'
     )
     message = MIMEText(body, 'plain', 'utf-8')
     message['From'] = mail_user_full
@@ -45,29 +45,38 @@ def sendEmail(content: list[str]) -> None:
         _ = smtpObj.sendmail(mail_user, recv_list, message.as_string())
     except SMTPException as e:
         logger.append(f'[ERROR] {getTime()} - 邮件发送失败！{type(e).__name__}: {e}')
-        raise SMTPException from e
+        raise SMTPException('邮件发送失败！') from e
+
+
+def test_dns(error_hosts: list[str]) -> None:
+    sendEmail(error_hosts: list[str])
 
 
 def test_url(host_list: list[str], port: int = 33890) -> None:
-    errorinfo: list[str] = []
+    error_hosts: list[str] = []
     for host in host_list:
         try:
-            logger.append(f'[INFO] {getTime()} - {host}')
+            logger.append(f'[INFO] {getTime()} - {host} - 开始。')
             with create_connection((host, port), timeout=3):
+                logger.append(f'[INFO] {getTime()} - {host} - 成功。')
                 continue
         except OSError as e:
             logger.append(f'[WARNING] {getTime()} - {host} - {type(e).__name__}: {e}')
-            errorinfo.append(host)
-    if errorinfo:
-        sendEmail(errorinfo)
+            error_hosts.append(host)
+    if error_hosts:
+        print(error_hosts)
+        # test_dns(errorinfo)
 
 
-def main_handler(event, context) -> None:
-    host_list = ['apple.cvm.xiaozhiyuqwq.top', 'banana.cvm.xiaozhiyuqwq.top']
-    # host_list = ['182.254.222.77', '101.37.17.212']
+def main_handler(event: dict[str, str | int], context: dict[str, str | int]) -> None:
+    host_list = [
+        'apple.cvm.xiaozhiyuqwq.top',
+        'banana.cvm.xiaozhiyuqwq.top',
+        'cherry.cvm.xiaozhiyuqwq.top',
+    ]
     test_url(host_list)
     # print('\n'.join(logger))
 
 
 if __name__ == '__main__':
-    main_handler('', '')
+    main_handler({}, {})
