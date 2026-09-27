@@ -1,4 +1,7 @@
+/__pycache__/
+/.vscode/
 /.venv
-/__pycache__
+/src/*
+!/src/index.py
 *.env
 debug.log
