@@ -8,5 +8,8 @@ dependencies = [
     "alibabacloud-alidns20150109>=4.6.0",
 ]
 
+[tool.basedpyright]
+reportMissingTypeStubs = "none"
+
 [tool.ruff.format]
 quote-style = "single"

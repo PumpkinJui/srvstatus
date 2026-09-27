@@ -1,14 +1,14 @@
-import json
 import os
 import sys
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)) + "/..")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)) + '/..')
 
 from datetime import datetime, timezone
 from email.mime.text import MIMEText
 from email.utils import parseaddr
 from smtplib import SMTP_SSL, SMTPException
 from socket import create_connection
+from typing import cast
 
 from alibabacloud_alidns20150109 import models as alidns_20150109_models
 from alibabacloud_alidns20150109.client import Client as Alidns20150109Client
@@ -19,10 +19,12 @@ from darabonba.runtime import RuntimeOptions as util_runtime_options
 
 logger: list[str] = []
 
+
 def get_time() -> str:
     return (
         datetime.now(timezone.utc).isoformat(timespec='seconds').replace('+00:00', 'Z')
     )
+
 
 def create_client() -> Alidns20150109Client:
     access_key_id = os.environ.get('ALIBABA_CLOUD_ACCESS_KEY_ID')
@@ -45,9 +47,10 @@ def create_client() -> Alidns20150109Client:
     )
     return Alidns20150109Client(config)
 
+
 def list_record(
     client: Alidns20150109Client,
-) -> list[dict[str, str | int | bool]]:
+) -> dict[str, tuple[str, str]]:
     describe_sub_domain_records_request = (
         alidns_20150109_models.DescribeSubDomainRecordsRequest(
             sub_domain='mc2gslb.xiaozhiyuqwq.top'
@@ -57,21 +60,23 @@ def list_record(
     resp = client.describe_sub_domain_records_with_options(
         describe_sub_domain_records_request, runtime
     )
-    return [item.__dict__ for item in list(resp.body.domain_records.record)]
+    return {
+        item.__dict__['value']: (item.__dict__['record_id'], item.__dict__['status'])
+        for item in list(resp.body.domain_records.record)
+    }
 
 
-def set_status(client: Alidns20150109Client) -> None:
-    # client = create_client()
+def set_status(client: Alidns20150109Client, record_id: str, status: str) -> None:
     set_domain_record_status_request = (
         alidns_20150109_models.SetDomainRecordStatusRequest(
-            status='Disable', record_id='pgp123'
+            status=status, record_id=record_id
         )
     )
     runtime = util_runtime_options()
     resp = client.set_domain_record_status_with_options(
         set_domain_record_status_request, runtime
     )
-    print(json.dumps(resp, default=str, indent=2))
+    logger.append(f'[INFO] {get_time()} - {record_id}: {cast(str, resp.body.status)}')
 
 
 def send_email(content: list[str], down: bool) -> None:
@@ -104,34 +109,60 @@ def send_email(content: list[str], down: bool) -> None:
         logger.append(f'[ERROR] {get_time()} - 邮件发送失败！{type(e).__name__}: {e}')
         raise SMTPException('邮件发送失败！') from e
 
-def test_dns(error_hosts: list[str]) -> None:
-    send_email(error_hosts, True)
+
+def test_dns(host_status: dict[str, bool]) -> None:
+    client = create_client()
+    switched: dict[str, bool] = {}
+    for host, (record_id, remote_status) in list_record(client).items():
+        local_status = host_status[host]
+        if (local_status and remote_status.upper() == 'ENABLE') or (
+            not local_status and remote_status.upper() == 'DISABLE'
+        ):
+            logger.append(f'[INFO] {get_time()} - {host} 匹配状态 {remote_status}。')
+            continue
+        if local_status:
+            logger.append(
+                f'[INFO] {get_time()} - {host} 拨测成功，而 DNS {remote_status}。'
+            )
+            switched[host] = local_status
+            set_status(client, record_id, 'Enable')
+            continue
+        logger.append(
+            f'[INFO] {get_time()} - {host} 拨测失败，而 DNS {remote_status}。'
+        )
+        switched[host] = local_status
+        set_status(client, record_id, 'Disable')
+    if switched:
+        pass
+
 
 def test_url(host_list: list[str], port: int = 33890) -> None:
-    error_hosts: list[str] = []
-    ok_hosts: list[str] = []
+    host_status: dict[str, bool] = {}
     for host in host_list:
         try:
             logger.append(f'[INFO] {get_time()} - {host} - 开始。')
             with create_connection((host, port), timeout=3):
                 logger.append(f'[INFO] {get_time()} - {host} - 成功。')
-                ok_hosts.append(host)
+                host_status[host] = True
                 continue
         except OSError as e:
             logger.append(f'[WARNING] {get_time()} - {host} - {type(e).__name__}: {e}')
-            error_hosts.append(host)
-    if error_hosts:
-        print(error_hosts)
+            host_status[host] = False
+    test_dns(host_status)
+
 
 def main_handler(event: dict[str, str | int], context: dict[str, str | int]) -> None:
+    _ = (event, context)
     host_list = [
         'apple.cvm.xiaozhiyuqwq.top',
         'banana.cvm.xiaozhiyuqwq.top',
         'cherry.cvm.xiaozhiyuqwq.top',
     ]
-    test_url(host_list)
-    # print('\n'.join(logger))
+    try:
+        test_url(host_list)
+    finally:
+        print('\n'.join(logger))
+
 
 if __name__ == '__main__':
     main_handler({}, {})
-    # print(list_record(create_client()))
