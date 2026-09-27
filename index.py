@@ -3,9 +3,9 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)) + '/..')
 
-from datetime import datetime, timezone
 from email.mime.text import MIMEText
 from email.utils import parseaddr
+from logging import DEBUG, FileHandler, Formatter, StreamHandler, getLogger, shutdown
 from smtplib import SMTP_SSL, SMTPException
 from socket import create_connection
 from typing import cast
@@ -17,23 +17,14 @@ from alibabacloud_credentials.models import Config as CredentialConfig
 from alibabacloud_tea_openapi import models as open_api_models
 from darabonba.runtime import RuntimeOptions as util_runtime_options
 
-logger: list[str] = []
-
-
-def get_time() -> str:
-    return (
-        datetime.now(timezone.utc).isoformat(timespec='seconds').replace('+00:00', 'Z')
-    )
-
 
 def create_client() -> Alidns20150109Client:
     access_key_id = os.environ.get('ALIBABA_CLOUD_ACCESS_KEY_ID')
     access_key_secret = os.environ.get('ALIBABA_CLOUD_ACCESS_KEY_SECRET')
     role_arn = os.environ.get('ALIBABA_CLOUD_ROLE_ARN')
     if not (access_key_id and access_key_secret and role_arn):
-        logger.append(f'[ERROR] {get_time()} 未找到阿里云信息！')
         raise OSError('未找到阿里云信息！')
-    credentialsConfig = CredentialConfig(
+    credentials_config = CredentialConfig(
         type='ram_role_arn',
         access_key_id=access_key_id,
         access_key_secret=access_key_secret,
@@ -41,9 +32,9 @@ def create_client() -> Alidns20150109Client:
         role_session_name='scf',
         role_session_expiration=900,
     )
-    credentialsClient = CredentialClient(credentialsConfig)
+    credentials_client = CredentialClient(credentials_config)
     config = open_api_models.Config(
-        credential=credentialsClient, endpoint='alidns.aliyuncs.com'
+        credential=credentials_client, endpoint='alidns.aliyuncs.com'
     )
     return Alidns20150109Client(config)
 
@@ -51,6 +42,7 @@ def create_client() -> Alidns20150109Client:
 def list_record(
     client: Alidns20150109Client,
 ) -> dict[str, tuple[str, str]]:
+    logger.info('开始获取 DNS 记录。')
     describe_sub_domain_records_request = (
         alidns_20150109_models.DescribeSubDomainRecordsRequest(
             sub_domain='mc2gslb.xiaozhiyuqwq.top'
@@ -60,6 +52,7 @@ def list_record(
     resp = client.describe_sub_domain_records_with_options(
         describe_sub_domain_records_request, runtime
     )
+    logger.info('成功获取 DNS 记录。')
     return {
         item.__dict__['value']: (item.__dict__['record_id'], item.__dict__['status'])
         for item in list(resp.body.domain_records.record)
@@ -76,37 +69,43 @@ def set_status(client: Alidns20150109Client, record_id: str, status: str) -> Non
     resp = client.set_domain_record_status_with_options(
         set_domain_record_status_request, runtime
     )
-    logger.append(f'[INFO] {get_time()} - {record_id}: {cast(str, resp.body.status)}')
+    logger.info('%s: %s', record_id, cast(str, resp.body.status))
 
 
-def send_email(content: list[str], down: bool) -> None:
-    mail_host = 'smtp.126.com'
+def write_email(content: dict[str, bool]) -> None:
     mail_user_full = os.environ.get('MAIL_USER')
     mail_pass = os.environ.get('MAIL_PASS')
     if not (mail_user_full and mail_pass):
-        logger.append(f'[ERROR] {get_time()} 未找到可用邮箱！')
         raise OSError('未找到可用邮箱！')
     _, mail_user = parseaddr(mail_user_full)
     recv_list = [mail_user]
     recv_str = ', '.join(recv_list)
     subject = '服务器连通性提示'
-    content_str = '\n'.join(content)
+    content_lt: list[str] = []
+    for host, real_status in content.items():
+        content_lt.append(f'{host}：当前在线' if real_status else f'{host}：当前离线')
+    content_str = '\n'.join(content_lt)
     body = (
-        '监测到以下服务器节点已经下线，相关 DNS 记录已禁用。\n'
-        if down
-        else '监测到以下服务器节点已经上线，相关 DNS 记录已启用。\n'
+        '监测到以下节点的 FRP 转发状态变化，DNS 记录已相应调整。\n\n'
+        f'{content_str}\n\n'
+        '本邮件由定时拨测脚本自动发送，请勿回复\n'
     )
-    body += f'{content_str}\n本邮件由腾讯云 SCF 自动发送，请勿回复\n'
     message = MIMEText(body, 'plain', 'utf-8')
     message['From'] = mail_user_full
     message['To'] = recv_str
     message['Subject'] = subject
+    send_email(mail_user, mail_pass, recv_list, message)
+
+
+def send_email(
+    mail_user: str, mail_pass: str, recv_list: list[str], message: MIMEText
+) -> None:
+    mail_host = 'smtp.126.com'
     try:
-        smtpObj = SMTP_SSL(mail_host, 465)
-        _ = smtpObj.login(mail_user, mail_pass)
-        _ = smtpObj.sendmail(mail_user, recv_list, message.as_string())
+        smtp_object = SMTP_SSL(mail_host, 465)
+        _ = smtp_object.login(mail_user, mail_pass)
+        _ = smtp_object.sendmail(mail_user, recv_list, message.as_string())
     except SMTPException as e:
-        logger.append(f'[ERROR] {get_time()} - 邮件发送失败！{type(e).__name__}: {e}')
         raise SMTPException('邮件发送失败！') from e
 
 
@@ -118,35 +117,31 @@ def test_dns(host_status: dict[str, bool]) -> None:
         if (local_status and remote_status.upper() == 'ENABLE') or (
             not local_status and remote_status.upper() == 'DISABLE'
         ):
-            logger.append(f'[INFO] {get_time()} - {host} 匹配状态 {remote_status}。')
+            logger.info('%s 匹配状态 %s。', host, remote_status)
             continue
         if local_status:
-            logger.append(
-                f'[INFO] {get_time()} - {host} 拨测成功，而 DNS {remote_status}。'
-            )
+            logger.warning('%s 拨测成功，而 DNS 状态为 %s。', host, remote_status)
             switched[host] = local_status
             set_status(client, record_id, 'Enable')
             continue
-        logger.append(
-            f'[INFO] {get_time()} - {host} 拨测失败，而 DNS {remote_status}。'
-        )
+        logger.warning('%s 拨测成功，而 DNS 状态为 %s。', host, remote_status)
         switched[host] = local_status
         set_status(client, record_id, 'Disable')
     if switched:
-        pass
+        write_email(switched)
 
 
 def test_url(host_list: list[str], port: int = 33890) -> None:
     host_status: dict[str, bool] = {}
     for host in host_list:
         try:
-            logger.append(f'[INFO] {get_time()} - {host} - 开始。')
+            logger.info('%s - 开始。', host)
             with create_connection((host, port), timeout=3):
-                logger.append(f'[INFO] {get_time()} - {host} - 成功。')
+                logger.info('%s - 成功。', host)
                 host_status[host] = True
                 continue
         except OSError as e:
-            logger.append(f'[WARNING] {get_time()} - {host} - {type(e).__name__}: {e}')
+            logger.warning('%s - %s: %s', host, type(e).__name__, e)
             host_status[host] = False
     test_dns(host_status)
 
@@ -160,9 +155,22 @@ def main_handler(event: dict[str, str | int], context: dict[str, str | int]) -> 
     ]
     try:
         test_url(host_list)
+    except Exception:
+        logger.exception('未知异常。')
     finally:
-        print('\n'.join(logger))
+        shutdown()
 
+
+logger = getLogger(__name__)
+logger.handlers.clear()
+logger.setLevel(DEBUG)
+formatter = Formatter('[%(levelname)s] - %(asctime)s - %(message)s')
+file_handler = FileHandler('debug.log', 'w', encoding='utf-8')
+stream_handler = StreamHandler()
+file_handler.setFormatter(formatter)
+stream_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
+logger.addHandler(stream_handler)
 
 if __name__ == '__main__':
     main_handler({}, {})
