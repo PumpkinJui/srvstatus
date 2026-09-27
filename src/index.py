@@ -5,7 +5,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)) + '/..')
 
 from email.mime.text import MIMEText
 from email.utils import parseaddr
-from logging import DEBUG, FileHandler, Formatter, StreamHandler, getLogger, shutdown
+from logging import DEBUG, Formatter, StreamHandler, getLogger, shutdown
 from smtplib import SMTP_SSL, SMTPException
 from socket import create_connection
 from typing import cast
@@ -165,11 +165,8 @@ logger = getLogger(__name__)
 logger.handlers.clear()
 logger.setLevel(DEBUG)
 formatter = Formatter('[%(levelname)s] - %(asctime)s - %(message)s')
-file_handler = FileHandler('debug.log', 'w', encoding='utf-8')
 stream_handler = StreamHandler()
-file_handler.setFormatter(formatter)
 stream_handler.setFormatter(formatter)
-logger.addHandler(file_handler)
 logger.addHandler(stream_handler)
 
 if __name__ == '__main__':

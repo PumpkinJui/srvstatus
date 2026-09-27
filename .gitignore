@@ -4,4 +4,3 @@
 /src/*
 !/src/index.py
 *.env
-debug.log
