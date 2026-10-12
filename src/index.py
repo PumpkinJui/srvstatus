@@ -75,17 +75,18 @@ def set_status(client: Alidns20150109Client, record_id: str, status: str) -> Non
 def write_email(content: dict[str, bool]) -> None:
     mail_user_full = os.environ.get('MAIL_USER')
     mail_pass = os.environ.get('MAIL_PASS')
-    if not (mail_user_full and mail_pass):
+    recv_str = os.environ.get('MAIL_RECV')
+    if not (mail_user_full and mail_pass and recv_str):
         raise OSError('未找到可用邮箱！')
     _, mail_user = parseaddr(mail_user_full)
-    recv_list = [mail_user]
-    recv_str = ', '.join(recv_list)
+    recv_list: list[str] = recv_str.split(', ')
     subject = '服务器连通性提示'
     content_lt: list[str] = []
     for host, real_status in content.items():
         content_lt.append(f'{host}：当前在线' if real_status else f'{host}：当前离线')
     content_str = '\n'.join(content_lt)
     body = (
+        # '这是一封测试邮件，下面的数据是模拟数据，并不代表真实情况。\n\n'
         '监测到以下节点的 FRP 转发状态变化，DNS 记录已相应调整。\n\n'
         f'{content_str}\n\n'
         '本邮件由定时拨测脚本自动发送，请勿回复\n'
