@@ -125,7 +125,7 @@ def test_dns(host_status: dict[str, bool]) -> None:
             switched[host] = local_status
             set_status(client, record_id, 'Enable')
             continue
-        logger.warning('%s 拨测成功，而 DNS 状态为 %s。', host, remote_status)
+        logger.warning('%s 拨测失败，而 DNS 状态为 %s。', host, remote_status)
         switched[host] = local_status
         set_status(client, record_id, 'Disable')
     if switched:
