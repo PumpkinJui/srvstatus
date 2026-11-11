@@ -1,11 +1,11 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.10"
 
 [[package]]
 name = "aiofiles"
 version = "24.1.0"
-source = { registry = "https://mirrors.cernet.edu.cn/pypi/web/simple" }
+source = { registry = "https://avoidcqu-avoidzju.mirrors.cernet.edu.cn/pypi/web/simple" }
 sdist = { url = "https://mirrors.hust.edu.cn/pypi/web/packages/0b/03/a88171e277e8caa88a4c77808c20ebb04ba74cc4681bf1e9416c862de237/aiofiles-24.1.0.tar.gz", hash = "sha256:22a075c9e5a3810f0c2e48f3008c94d68c65d763b9b03857924c99e57355166c" }
 wheels = [
     { url = "https://mirrors.hust.edu.cn/pypi/web/packages/a5/45/30bb92d442636f570cb5651bc661f52b610e2eec3f891a5dc3a4c3667db0/aiofiles-24.1.0-py3-none-any.whl", hash = "sha256:b4ec55f4195e3eb5d7abd1bf7e061763e864dd4954231fb8539a0ef8bb8260e5" },
@@ -14,7 +14,7 @@ wheels = [
 [[package]]
 name = "aiohappyeyeballs"
 version = "2.7.1"
-source = { registry = "https://mirrors.cernet.edu.cn/pypi/web/simple" }
+source = { registry = "https://avoidcqu-avoidzju.mirrors.cernet.edu.cn/pypi/web/simple" }
 sdist = { url = "https://mirrors.hust.edu.cn/pypi/web/packages/ce/f4/eec0465c2f67b2664688d0240b3212d5196fd89e741df67ddb81f8d35658/aiohappyeyeballs-2.7.1.tar.gz", hash = "sha256:065665c041c42a5938ed220bdcd7230f22527fbec085e1853d2402c8a3615d9d" }
 wheels = [
     { url = "https://mirrors.hust.edu.cn/pypi/web/packages/71/43/1947f06babed6b3f1d7f38b0c767f52df66bfb2bc10b468c4a7de9eceff2/aiohappyeyeballs-2.7.1-py3-none-any.whl", hash = "sha256:9243213661e29250eb41368e5daa826fc017156c3b8a11440826b2e3ed376472" },
@@ -23,7 +23,7 @@ wheels = [
 [[package]]
 name = "aiohttp"
 version = "3.14.3"
-source = { registry = "https://mirrors.cernet.edu.cn/pypi/web/simple" }
+source = { registry = "https://avoidcqu-avoidzju.mirrors.cernet.edu.cn/pypi/web/simple" }
 dependencies = [
     { name = "aiohappyeyeballs" },
     { name = "aiosignal" },
@@ -160,7 +160,7 @@ wheels = [
 [[package]]
 name = "aiosignal"
 version = "1.4.0"
-source = { registry = "https://mirrors.cernet.edu.cn/pypi/web/simple" }
+source = { registry = "https://avoidcqu-avoidzju.mirrors.cernet.edu.cn/pypi/web/simple" }
 dependencies = [
     { name = "frozenlist" },
     { name = "typing-extensions", marker = "python_full_version < '3.13'" },
@@ -173,7 +173,7 @@ wheels = [
 [[package]]
 name = "alibabacloud-alidns20150109"
 version = "4.6.0"
-source = { registry = "https://mirrors.cernet.edu.cn/pypi/web/simple" }
+source = { registry = "https://avoidcqu-avoidzju.mirrors.cernet.edu.cn/pypi/web/simple" }
 dependencies = [
     { name = "alibabacloud-tea-openapi" },
     { name = "darabonba-core" },
@@ -186,7 +186,7 @@ wheels = [
 [[package]]
 name = "alibabacloud-credentials"
 version = "1.0.12"
-source = { registry = "https://mirrors.cernet.edu.cn/pypi/web/simple" }
+source = { registry = "https://avoidcqu-avoidzju.mirrors.cernet.edu.cn/pypi/web/simple" }
 dependencies = [
     { name = "aiofiles" },
     { name = "alibabacloud-credentials-api" },
@@ -201,7 +201,7 @@ wheels = [
 [[package]]
 name = "alibabacloud-credentials-api"
 version = "1.0.1"
-source = { registry = "https://mirrors.cernet.edu.cn/pypi/web/simple" }
+source = { registry = "https://avoidcqu-avoidzju.mirrors.cernet.edu.cn/pypi/web/simple" }
 sdist = { url = "https://mirrors.hust.edu.cn/pypi/web/packages/89/7e/6145e2d132752f0de72701df556304c59dda311405a252a598ad6fd9b4de/alibabacloud_credentials_api-1.0.1.tar.gz", hash = "sha256:8ea0668a6558f6956b8d20b2e561d19a80ea29c22cf56a3004d434b24a981b36" }
 wheels = [
     { url = "https://mirrors.hust.edu.cn/pypi/web/packages/0b/49/ff401af96d77d40ab918096d831bd3360f3eec60f10e65125e5789c4e617/alibabacloud_credentials_api-1.0.1-py3-none-any.whl", hash = "sha256:5f27889113214fc53493b3e918eb26d73dfab2022e22bdaac262849b8e58cbc0" },
@@ -210,7 +210,7 @@ wheels = [
 [[package]]
 name = "alibabacloud-gateway-spi"
 version = "0.0.4"
-source = { registry = "https://mirrors.cernet.edu.cn/pypi/web/simple" }
+source = { registry = "https://avoidcqu-avoidzju.mirrors.cernet.edu.cn/pypi/web/simple" }
 dependencies = [
     { name = "alibabacloud-credentials" },
 ]
@@ -222,7 +222,7 @@ wheels = [
 [[package]]
 name = "alibabacloud-tea"
 version = "0.4.3"
-source = { registry = "https://mirrors.cernet.edu.cn/pypi/web/simple" }
+source = { registry = "https://avoidcqu-avoidzju.mirrors.cernet.edu.cn/pypi/web/simple" }
 dependencies = [
     { name = "aiohttp" },
     { name = "requests" },
@@ -232,7 +232,7 @@ sdist = { url = "https://mirrors.hust.edu.cn/pypi/web/packages/9a/7d/b22cb9a0d4f
 [[package]]
 name = "alibabacloud-tea-openapi"
 version = "0.4.6"
-source = { registry = "https://mirrors.cernet.edu.cn/pypi/web/simple" }
+source = { registry = "https://avoidcqu-avoidzju.mirrors.cernet.edu.cn/pypi/web/simple" }
 dependencies = [
     { name = "alibabacloud-credentials" },
     { name = "alibabacloud-gateway-spi" },
@@ -248,7 +248,7 @@ wheels = [
 [[package]]
 name = "alibabacloud-tea-util"
 version = "0.3.15"
-source = { registry = "https://mirrors.cernet.edu.cn/pypi/web/simple" }
+source = { registry = "https://avoidcqu-avoidzju.mirrors.cernet.edu.cn/pypi/web/simple" }
 dependencies = [
     { name = "alibabacloud-tea" },
 ]
@@ -260,7 +260,7 @@ wheels = [
 [[package]]
 name = "apscheduler"
 version = "3.11.3"
-source = { registry = "https://mirrors.cernet.edu.cn/pypi/web/simple" }
+source = { registry = "https://avoidcqu-avoidzju.mirrors.cernet.edu.cn/pypi/web/simple" }
 dependencies = [
     { name = "tzlocal" },
 ]
@@ -272,7 +272,7 @@ wheels = [
 [[package]]
 name = "async-timeout"
 version = "5.0.1"
-source = { registry = "https://mirrors.cernet.edu.cn/pypi/web/simple" }
+source = { registry = "https://avoidcqu-avoidzju.mirrors.cernet.edu.cn/pypi/web/simple" }
 sdist = { url = "https://mirrors.hust.edu.cn/pypi/web/packages/a5/ae/136395dfbfe00dfc94da3f3e136d0b13f394cba8f4841120e34226265780/async_timeout-5.0.1.tar.gz", hash = "sha256:d9321a7a3d5a6a5e187e824d2fa0793ce379a202935782d555d6e9d2735677d3" }
 wheels = [
     { url = "https://mirrors.hust.edu.cn/pypi/web/packages/fe/ba/e2081de779ca30d473f21f5b30e0e737c438205440784c7dfc81efc2b029/async_timeout-5.0.1-py3-none-any.whl", hash = "sha256:39e3809566ff85354557ec2398b55e096c8364bacac9405a7a1fa429e77fe76c" },
@@ -281,7 +281,7 @@ wheels = [
 [[package]]
 name = "attrs"
 version = "26.1.0"
-source = { registry = "https://mirrors.cernet.edu.cn/pypi/web/simple" }
+source = { registry = "https://avoidcqu-avoidzju.mirrors.cernet.edu.cn/pypi/web/simple" }
 sdist = { url = "https://mirrors.hust.edu.cn/pypi/web/packages/9a/8e/82a0fe20a541c03148528be8cac2408564a6c9a0cc7e9171802bc1d26985/attrs-26.1.0.tar.gz", hash = "sha256:d03ceb89cb322a8fd706d4fb91940737b6642aa36998fe130a9bc96c985eff32" }
 wheels = [
     { url = "https://mirrors.hust.edu.cn/pypi/web/packages/64/b4/17d4b0b2a2dc85a6df63d1157e028ed19f90d4cd97c36717afef2bc2f395/attrs-26.1.0-py3-none-any.whl", hash = "sha256:c647aa4a12dfbad9333ca4e71fe62ddc36f4e63b2d260a37a8b83d2f043ac309" },
@@ -290,7 +290,7 @@ wheels = [
 [[package]]
 name = "certifi"
 version = "2026.7.22"
-source = { registry = "https://mirrors.cernet.edu.cn/pypi/web/simple" }
+source = { registry = "https://avoidcqu-avoidzju.mirrors.cernet.edu.cn/pypi/web/simple" }
 sdist = { url = "https://mirrors.hust.edu.cn/pypi/web/packages/a3/c2/24167ea9858356b47a87a50d39908bfdb72ceeefe0041586e704e5376b3a/certifi-2026.7.22.tar.gz", hash = "sha256:741e2c3b351ddf169a738da9f2c048608ff7f2c5cc02f1ebc6b118bb090d5d55" }
 wheels = [
     { url = "https://mirrors.hust.edu.cn/pypi/web/packages/0b/a7/71ac2cff56fec219ed242bb11b8efb69fcc4bec75db06fb7bfe35de520e6/certifi-2026.7.22-py3-none-any.whl", hash = "sha256:62f22742b58a1a33014a2b6b706588a8d7e2a88ae7bd1a6ebe8c992928483775" },
@@ -299,7 +299,7 @@ wheels = [
 [[package]]
 name = "cffi"
 version = "2.1.1"
-source = { registry = "https://mirrors.cernet.edu.cn/pypi/web/simple" }
+source = { registry = "https://avoidcqu-avoidzju.mirrors.cernet.edu.cn/pypi/web/simple" }
 dependencies = [
     { name = "pycparser", marker = "implementation_name != 'PyPy'" },
 ]
@@ -409,7 +409,7 @@ wheels = [
 [[package]]
 name = "charset-normalizer"
 version = "3.5.1"
-source = { registry = "https://mirrors.cernet.edu.cn/pypi/web/simple" }
+source = { registry = "https://avoidcqu-avoidzju.mirrors.cernet.edu.cn/pypi/web/simple" }
 sdist = { url = "https://mirrors.hust.edu.cn/pypi/web/packages/e5/3f/143b048436775b0f76ac3eec145c019e8173ccc2885c8f20319b996d5e83/charset_normalizer-3.5.1.tar.gz", hash = "sha256:6117b84ea48435e5356dc737f5121485c30920ba43375fa7b434fd753df0eac3" }
 wheels = [
     { url = "https://mirrors.hust.edu.cn/pypi/web/packages/71/aa/554e2614f38fc34c58ff1d0911ae8535ad2516440d5482d76fe59f1088b0/charset_normalizer-3.5.1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:d1ee1e296209fdce05b81b663250eefa02213a2da7b41bf26f7829b8ba3545aa" },
@@ -572,7 +572,7 @@ wheels = [
 [[package]]
 name = "cryptography"
 version = "50.0.1"
-source = { registry = "https://mirrors.cernet.edu.cn/pypi/web/simple" }
+source = { registry = "https://avoidcqu-avoidzju.mirrors.cernet.edu.cn/pypi/web/simple" }
 dependencies = [
     { name = "cffi", marker = "platform_python_implementation != 'PyPy'" },
     { name = "typing-extensions", marker = "python_full_version < '3.11'" },
@@ -629,7 +629,7 @@ wheels = [
 [[package]]
 name = "darabonba-core"
 version = "1.0.8"
-source = { registry = "https://mirrors.cernet.edu.cn/pypi/web/simple" }
+source = { registry = "https://avoidcqu-avoidzju.mirrors.cernet.edu.cn/pypi/web/simple" }
 dependencies = [
     { name = "aiohttp" },
     { name = "alibabacloud-tea" },
@@ -644,7 +644,7 @@ wheels = [
 [[package]]
 name = "frozenlist"
 version = "1.8.0"
-source = { registry = "https://mirrors.cernet.edu.cn/pypi/web/simple" }
+source = { registry = "https://avoidcqu-avoidzju.mirrors.cernet.edu.cn/pypi/web/simple" }
 sdist = { url = "https://mirrors.hust.edu.cn/pypi/web/packages/2d/f5/c831fac6cc817d26fd54c7eaccd04ef7e0288806943f7cc5bbf69f3ac1f0/frozenlist-1.8.0.tar.gz", hash = "sha256:3ede829ed8d842f6cd48fc7081d7a41001a56f1f38603f9d49bf3020d59a31ad" }
 wheels = [
     { url = "https://mirrors.hust.edu.cn/pypi/web/packages/83/4a/557715d5047da48d54e659203b9335be7bfaafda2c3f627b7c47e0b3aaf3/frozenlist-1.8.0-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:b37f6d31b3dcea7deb5e9696e529a6aa4a898adc33db82da12e4c60a7c4d2011" },
@@ -765,7 +765,7 @@ wheels = [
 [[package]]
 name = "idna"
 version = "3.19"
-source = { registry = "https://mirrors.cernet.edu.cn/pypi/web/simple" }
+source = { registry = "https://avoidcqu-avoidzju.mirrors.cernet.edu.cn/pypi/web/simple" }
 sdist = { url = "https://mirrors.hust.edu.cn/pypi/web/packages/5f/f7/abb373e5757eaec4b922b92f97ec8d6d7e057cf06778247604fbc4e7c3f3/idna-3.19.tar.gz", hash = "sha256:5e0811a4383b21dc5838069f801c4fb62113b7447663d2530d2bd6e77b49bf15" }
 wheels = [
     { url = "https://mirrors.hust.edu.cn/pypi/web/packages/57/b0/0e52c878c53f245edd3a11020f20979b3f490f245af532c7cae3027754b5/idna-3.19-py3-none-any.whl", hash = "sha256:815e7be7a7806d54abb586dc943addc79e8b2ee16915059658cbeff4b1b43bf4" },
@@ -774,7 +774,7 @@ wheels = [
 [[package]]
 name = "multidict"
 version = "6.7.1"
-source = { registry = "https://mirrors.cernet.edu.cn/pypi/web/simple" }
+source = { registry = "https://avoidcqu-avoidzju.mirrors.cernet.edu.cn/pypi/web/simple" }
 dependencies = [
     { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
@@ -912,7 +912,7 @@ wheels = [
 [[package]]
 name = "propcache"
 version = "0.5.2"
-source = { registry = "https://mirrors.cernet.edu.cn/pypi/web/simple" }
+source = { registry = "https://avoidcqu-avoidzju.mirrors.cernet.edu.cn/pypi/web/simple" }
 sdist = { url = "https://mirrors.hust.edu.cn/pypi/web/packages/ec/44/c87281c333769159c50594f22610f77398a47ccbfbbf23074e744e86f87c/propcache-0.5.2.tar.gz", hash = "sha256:01c4fc7480cd0598bb4b57022df55b9ca296da7fc5a8760bd8451a7e63a7d427" }
 wheels = [
     { url = "https://mirrors.hust.edu.cn/pypi/web/packages/5b/56/030b7b4719d53085722893e0009dffb9236aa10bca1b12121bdc5626ef16/propcache-0.5.2-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:d5a81be28596d6559f6131ef33e10200de6e17643b3c74ce03f9eb103be6ae8b" },
@@ -1040,7 +1040,7 @@ wheels = [
 [[package]]
 name = "pycparser"
 version = "3.0"
-source = { registry = "https://mirrors.cernet.edu.cn/pypi/web/simple" }
+source = { registry = "https://avoidcqu-avoidzju.mirrors.cernet.edu.cn/pypi/web/simple" }
 sdist = { url = "https://mirrors.hust.edu.cn/pypi/web/packages/1b/7d/92392ff7815c21062bea51aa7b87d45576f649f16458d78b7cf94b9ab2e6/pycparser-3.0.tar.gz", hash = "sha256:600f49d217304a5902ac3c37e1281c9fe94e4d0489de643a9504c5cdfdfc6b29" }
 wheels = [
     { url = "https://mirrors.hust.edu.cn/pypi/web/packages/0c/c3/44f3fbbfa403ea2a7c779186dc20772604442dde72947e7d01069cbe98e3/pycparser-3.0-py3-none-any.whl", hash = "sha256:b727414169a36b7d524c1c3e31839a521725078d7b2ff038656844266160a992" },
@@ -1049,7 +1049,7 @@ wheels = [
 [[package]]
 name = "requests"
 version = "2.34.2"
-source = { registry = "https://mirrors.cernet.edu.cn/pypi/web/simple" }
+source = { registry = "https://avoidcqu-avoidzju.mirrors.cernet.edu.cn/pypi/web/simple" }
 dependencies = [
     { name = "certifi" },
     { name = "charset-normalizer" },
@@ -1075,7 +1075,7 @@ requires-dist = [{ name = "alibabacloud-alidns20150109", specifier = ">=4.6.0" }
 [[package]]
 name = "typing-extensions"
 version = "4.16.0"
-source = { registry = "https://mirrors.cernet.edu.cn/pypi/web/simple" }
+source = { registry = "https://avoidcqu-avoidzju.mirrors.cernet.edu.cn/pypi/web/simple" }
 sdist = { url = "https://mirrors.hust.edu.cn/pypi/web/packages/f6/cc/6253133b5bb138fc3306cebfbda2c520f545d36b5be2c7255cc528bb45d6/typing_extensions-4.16.0.tar.gz", hash = "sha256:dc983d19a509c94dba722ee6abd33940f7c05a89e243c47e907eb4db6f1a43e5" }
 wheels = [
     { url = "https://mirrors.hust.edu.cn/pypi/web/packages/49/d3/b8441a820a491ddfc024b0b0cf0393375b75ea13866d9c66727e54c2fc80/typing_extensions-4.16.0-py3-none-any.whl", hash = "sha256:481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8" },
@@ -1084,7 +1084,7 @@ wheels = [
 [[package]]
 name = "tzdata"
 version = "2026.3"
-source = { registry = "https://mirrors.cernet.edu.cn/pypi/web/simple" }
+source = { registry = "https://avoidcqu-avoidzju.mirrors.cernet.edu.cn/pypi/web/simple" }
 sdist = { url = "https://mirrors.hust.edu.cn/pypi/web/packages/92/ff/5a28bdfd8c3ebec42564ac7d0e54ca3db65044a9314a97f9564fa7a1e926/tzdata-2026.3.tar.gz", hash = "sha256:4a1518b8993086a7982523e071643f3c0e5f213e75b21318e78bcabfff9d1415" }
 wheels = [
     { url = "https://mirrors.hust.edu.cn/pypi/web/packages/e5/6d/b53b99a9f2766d095985947a5782f1702cabb129a34f7a802d7197af832f/tzdata-2026.3-py2.py3-none-any.whl", hash = "sha256:dc096730c87af6cab1b171c9d532be840741ff5d459015e7f6947bd7d7e54931" },
@@ -1093,7 +1093,7 @@ wheels = [
 [[package]]
 name = "tzlocal"
 version = "5.4.4"
-source = { registry = "https://mirrors.cernet.edu.cn/pypi/web/simple" }
+source = { registry = "https://avoidcqu-avoidzju.mirrors.cernet.edu.cn/pypi/web/simple" }
 dependencies = [
     { name = "tzdata", marker = "sys_platform == 'win32'" },
 ]
@@ -1105,7 +1105,7 @@ wheels = [
 [[package]]
 name = "urllib3"
 version = "2.7.0"
-source = { registry = "https://mirrors.cernet.edu.cn/pypi/web/simple" }
+source = { registry = "https://avoidcqu-avoidzju.mirrors.cernet.edu.cn/pypi/web/simple" }
 sdist = { url = "https://mirrors.hust.edu.cn/pypi/web/packages/53/0c/06f8b233b8fd13b9e5ee11424ef85419ba0d8ba0b3138bf360be2ff56953/urllib3-2.7.0.tar.gz", hash = "sha256:231e0ec3b63ceb14667c67be60f2f2c40a518cb38b03af60abc813da26505f4c" }
 wheels = [
     { url = "https://mirrors.hust.edu.cn/pypi/web/packages/7f/3e/5db95bcf282c52709639744ca2a8b149baccf648e39c8cc87553df9eae0c/urllib3-2.7.0-py3-none-any.whl", hash = "sha256:9fb4c81ebbb1ce9531cce37674bbc6f1360472bc18ca9a553ede278ef7276897" },
@@ -1114,7 +1114,7 @@ wheels = [
 [[package]]
 name = "websocket-client"
 version = "1.9.0"
-source = { registry = "https://mirrors.cernet.edu.cn/pypi/web/simple" }
+source = { registry = "https://avoidcqu-avoidzju.mirrors.cernet.edu.cn/pypi/web/simple" }
 sdist = { url = "https://mirrors.hust.edu.cn/pypi/web/packages/2c/41/aa4bf9664e4cda14c3b39865b12251e8e7d239f4cd0e3cc1b6c2ccde25c1/websocket_client-1.9.0.tar.gz", hash = "sha256:9e813624b6eb619999a97dc7958469217c3176312b3a16a4bd1bc7e08a46ec98" }
 wheels = [
     { url = "https://mirrors.hust.edu.cn/pypi/web/packages/34/db/b10e48aa8fff7407e67470363eac595018441cf32d5e1001567a7aeba5d2/websocket_client-1.9.0-py3-none-any.whl", hash = "sha256:af248a825037ef591efbf6ed20cc5faa03d3b47b9e5a2230a529eeee1c1fc3ef" },
@@ -1123,7 +1123,7 @@ wheels = [
 [[package]]
 name = "yarl"
 version = "1.24.5"
-source = { registry = "https://mirrors.cernet.edu.cn/pypi/web/simple" }
+source = { registry = "https://avoidcqu-avoidzju.mirrors.cernet.edu.cn/pypi/web/simple" }
 dependencies = [
     { name = "idna" },
     { name = "multidict" },
