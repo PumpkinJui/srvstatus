@@ -31,7 +31,7 @@ def create_client() -> Alidns20150109Client:
         access_key_secret=access_key_secret,
         role_arn=role_arn,
         role_session_name='scf',
-        role_session_expiration=900,
+        role_session_expiration=1000,
     )
     credentials_client = CredentialClient(credentials_config)
     config = open_api_models.Config(
@@ -154,8 +154,8 @@ def test_url(host_list: KeysView[str], port: int = 33890) -> dict[str, bool]:
 
 def main_handler(event: dict[str, str | int], context: dict[str, str | int]) -> None:
     _ = (event, context)
-    client = create_client()
     try:
+        client = create_client()
         records_dict = list_record(client)
         host_status = test_url(records_dict.keys())
         test_dns(client, records_dict, host_status)
