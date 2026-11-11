@@ -3,6 +3,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)) + '/..')
 
+from collections.abc import KeysView
 from email.mime.text import MIMEText
 from email.utils import parseaddr
 from logging import DEBUG, Formatter, StreamHandler, getLogger, shutdown
@@ -52,10 +53,11 @@ def list_record(
     resp = client.describe_sub_domain_records_with_options(
         describe_sub_domain_records_request, runtime
     )
-    logger.info('成功获取 DNS 记录。')
+    domain_records = resp.body.domain_records.record
+    logger.info('成功获取 DNS 记录，共 %s 条。', len(domain_records))
     return {
         item.__dict__['value']: (item.__dict__['record_id'], item.__dict__['status'])
-        for item in list(resp.body.domain_records.record)
+        for item in list(domain_records)
     }
 
 
@@ -110,10 +112,13 @@ def send_email(
         raise SMTPException('邮件发送失败！') from e
 
 
-def test_dns(host_status: dict[str, bool]) -> None:
-    client = create_client()
+def test_dns(
+    client: Alidns20150109Client,
+    records_dict: dict[str, tuple[str, str]],
+    host_status: dict[str, bool],
+) -> None:
     switched: dict[str, bool] = {}
-    for host, (record_id, remote_status) in list_record(client).items():
+    for host, (record_id, remote_status) in records_dict.items():
         local_status = host_status[host]
         if (local_status and remote_status.upper() == 'ENABLE') or (
             not local_status and remote_status.upper() == 'DISABLE'
@@ -132,7 +137,7 @@ def test_dns(host_status: dict[str, bool]) -> None:
         write_email(switched)
 
 
-def test_url(host_list: list[str], port: int = 33890) -> None:
+def test_url(host_list: KeysView[str], port: int = 33890) -> dict[str, bool]:
     host_status: dict[str, bool] = {}
     for host in host_list:
         try:
@@ -144,18 +149,16 @@ def test_url(host_list: list[str], port: int = 33890) -> None:
         except OSError as e:
             logger.warning('%s - %s: %s', host, type(e).__name__, e)
             host_status[host] = False
-    test_dns(host_status)
+    return host_status
 
 
 def main_handler(event: dict[str, str | int], context: dict[str, str | int]) -> None:
     _ = (event, context)
-    host_list = [
-        'apple.cvm.xiaozhiyuqwq.top',
-        'banana.cvm.xiaozhiyuqwq.top',
-        'cherry.cvm.xiaozhiyuqwq.top',
-    ]
+    client = create_client()
     try:
-        test_url(host_list)
+        records_dict = list_record(client)
+        host_status = test_url(records_dict.keys())
+        test_dns(client, records_dict, host_status)
     except Exception:
         logger.exception('未知异常。')
     finally:
